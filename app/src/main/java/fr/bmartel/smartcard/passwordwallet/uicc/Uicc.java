@@ -20,10 +20,10 @@ package fr.bmartel.smartcard.passwordwallet.uicc;
 
 import android.util.Log;
 
-import org.simalliance.openmobileapi.Channel;
-import org.simalliance.openmobileapi.Reader;
-import org.simalliance.openmobileapi.SEService;
-import org.simalliance.openmobileapi.Session;
+import androidx.omapi.Channel;
+import androidx.omapi.Reader;
+import androidx.omapi.SEService;
+import androidx.omapi.Session;
 
 import java.io.IOException;
 import java.util.List;

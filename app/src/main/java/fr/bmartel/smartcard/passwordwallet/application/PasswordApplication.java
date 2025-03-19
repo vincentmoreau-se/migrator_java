@@ -20,6 +20,7 @@ package fr.bmartel.smartcard.passwordwallet.application;
 
 import android.app.Application;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -88,7 +89,7 @@ public class PasswordApplication extends Application implements SEService.CallBa
     public void onCreate() {
         super.onCreate();
 
-        mHandler = new Handler();
+        mHandler = new Handler(Looper.getMainLooper());
 
         LockManager<CustomPinActivity> lockManager = LockManager.getInstance();
         lockManager.enableAppLock(this, CustomPinActivity.class);

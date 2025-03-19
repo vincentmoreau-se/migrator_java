@@ -10,7 +10,7 @@
     <string name="dialog_ok">OK</string>
     <string name="about">about</string>
     <string name="open_source_items">Open Source components</string>
-    <string name="copyright">\u00a9 2017 Bertrand Martel</string>
+    <string name="copyright">© 2017 Bertrand Martel</string>
     <string name="github_link">https://github.com/bertrandmartel/sim-password-wallet</string>
     <string name="menu_title_save">save</string>
     <string name="menu_title_delete">delete</string>

@@ -139,7 +139,7 @@ public class MainActivity extends BaseActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         mFragment.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 }

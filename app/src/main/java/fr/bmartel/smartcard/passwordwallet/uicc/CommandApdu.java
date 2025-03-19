@@ -168,6 +168,7 @@ public class CommandApdu {
         return false;
     }
 
+    @Override
     public CommandApdu clone() {
         CommandApdu apdu = new CommandApdu();
         apdu.mCla = mCla;
