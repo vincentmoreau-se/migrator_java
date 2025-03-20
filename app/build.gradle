@@ -1,15 +1,15 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 26
-    buildToolsVersion "26.0.1"
+    compileSdkVersion 34
+    buildToolsVersion "34.0.0"
     defaultConfig {
         applicationId "fr.bmartel.smartcard.passwordwallet"
         minSdkVersion 17
-        targetSdkVersion 26
+        targetSdkVersion 34
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
@@ -23,9 +23,9 @@ android {
 }
 
 dependencies {
-    provided files('libs/org.simalliance.openmobileapi.jar')
-    compile "com.android.support:appcompat-v7:26.0.2"
-    compile 'com.android.support:design:26.0.2'
-    compile 'com.android.support:recyclerview-v7:26.0.2'
-    compile 'fr.bmartel:lollipin:2.01'
+    compileOnly files('libs/org.simalliance.openmobileapi.jar')
+    implementation "androidx.appcompat:appcompat:1.6.1"
+    implementation 'com.google.android.material:material:1.9.0'
+    implementation 'androidx.recyclerview:recyclerview:1.3.1'
+    implementation 'fr.bmartel:lollipin:2.01'
 }

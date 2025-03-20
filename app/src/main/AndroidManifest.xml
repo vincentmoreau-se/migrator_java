@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="fr.bmartel.smartcard.passwordwallet">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="org.simalliance.openmobileapi.SMARTCARD"></uses-permission>
 
@@ -18,7 +17,8 @@
             android:name="org.simalliance.openmobileapi"
             android:required="true" />
 
-        <activity android:name="fr.bmartel.smartcard.passwordwallet.MainActivity">
+        <activity android:name="fr.bmartel.smartcard.passwordwallet.MainActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -26,7 +26,8 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="fr.bmartel.smartcard.passwordwallet.CustomPinActivity">
+        <activity android:name="fr.bmartel.smartcard.passwordwallet.CustomPinActivity"
+            android:exported="false">
 
         </activity>
     </application>

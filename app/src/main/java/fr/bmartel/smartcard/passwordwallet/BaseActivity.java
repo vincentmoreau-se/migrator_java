@@ -24,12 +24,12 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.support.design.widget.NavigationView;
-import android.support.v4.app.Fragment;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.widget.Toolbar;
+import com.google.android.material.navigation.NavigationView;
+import androidx.fragment.app.Fragment;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -133,7 +133,7 @@ public abstract class BaseActivity extends PinCompatActivity implements IBaseAct
         // Find our drawer view
         mDrawer = findViewById(R.id.drawer_layout);
         drawerToggle = setupDrawerToggle();
-        mDrawer.setDrawerListener(drawerToggle);
+        mDrawer.addDrawerListener(drawerToggle);
         nvDrawer = findViewById(R.id.nvView);
 
         // Setup drawer view
@@ -643,4 +643,3 @@ public abstract class BaseActivity extends PinCompatActivity implements IBaseAct
         super.onDestroy();
     }
 }
-

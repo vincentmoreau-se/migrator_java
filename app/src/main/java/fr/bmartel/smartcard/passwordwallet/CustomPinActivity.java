@@ -21,11 +21,11 @@ package fr.bmartel.smartcard.passwordwallet;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.design.widget.NavigationView;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.widget.Toolbar;
+import com.google.android.material.navigation.NavigationView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -92,7 +92,7 @@ public class CustomPinActivity extends AppLockActivity implements IDialog {
         // Find our drawer view
         mDrawer = findViewById(R.id.drawer_layout);
         drawerToggle = setupDrawerToggle();
-        mDrawer.setDrawerListener(drawerToggle);
+        mDrawer.addDrawerListener(drawerToggle);
         nvDrawer = findViewById(R.id.nvView);
 
         mApplication = (PasswordApplication) getApplication();

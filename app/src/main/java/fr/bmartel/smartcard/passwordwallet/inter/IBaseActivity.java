@@ -18,7 +18,7 @@
  */
 package fr.bmartel.smartcard.passwordwallet.inter;
 
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.widget.Toolbar;
 import android.widget.ProgressBar;
 
 import java.util.List;
