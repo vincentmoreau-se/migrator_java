@@ -15,11 +15,16 @@ You can switch from one mode to another easily and data are migrated correctly f
 
 In both modes, AES 128 CBC is used on UICC to encrypt/decrypt passwords.
 
-A pin code must be configured the first time user open the app. The pin code security part comes from [this tutorial from Eric Vétillard](https://github.com/bertrandmartel/javacard-tutorial#jc101-password-pin--password-application-with-pin-security). This pin code can be changed using the options menu.
+The application uses device biometric authentication (fingerprint, face recognition) or device credentials (PIN, pattern, password) to unlock access. A SIM card pin code must be configured the first time the SIM applet is used. The SIM pin code security part comes from [this tutorial from Eric Vétillard](https://github.com/bertrandmartel/javacard-tutorial#jc101-password-pin--password-application-with-pin-security). The SIM pin code can be changed using the options menu.
 
 ![App preview](https://user-images.githubusercontent.com/5183022/30868430-e39796ba-a2de-11e7-94a3-a5d8fd33401e.gif)
 
-## Build
+## Build Requirements
+
+* Java 11 or higher
+* Android Gradle Plugin 7.4.2
+* Gradle 7.6
+* Kotlin 1.9.23
 
 ```bash
 git clone git@github.com:bertrandmartel/sim-password-wallet.git
@@ -29,9 +34,20 @@ cd sim-password-wallet
 
 * to use the emulator with pcsc support, check [these instructions](https://github.com/bertrandmartel/pcsc-android-emulator)
 
+## Migration & Modernization
+
+This project has been fully migrated and modernized:
+
+* **Kotlin Migration**: Complete conversion from Java to Kotlin (100% Kotlin codebase)
+* **AndroidX Migration**: Updated to use AndroidX libraries
+* **Biometric Authentication**: Replaced deprecated Lollipin library with androidx.biometric for modern biometric authentication (fingerprint, face recognition) and device credentials (PIN, pattern, password)
+* **Coroutines**: Implemented Kotlin coroutines for asynchronous operations, replacing ExecutorService
+* **Modern APIs**: Updated deprecated APIs including OnBackPressedCallback
+* **Build Tools**: Updated to Gradle 7.6, Android Gradle Plugin 7.4.2, and compileSdk 34
+
 ## External libraries
 
-* [Lollipin](https://github.com/omadahealth/LolliPin)
+* [androidx.biometric](https://developer.android.com/jetpack/androidx/releases/biometric) - Modern biometric authentication
 
 ## Dev libraries
 

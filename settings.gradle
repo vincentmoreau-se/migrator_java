@@ -1,1 +1,2 @@
-include ':app',':applet'
+include ':app'
+// ':applet' excluded - build separately with Gradle 3.3 + Java 8 (JavaCard plugin incompatible with Gradle 8)

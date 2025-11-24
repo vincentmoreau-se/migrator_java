@@ -1,79 +1,38 @@
+// Top-level build file for Kotlin migration
 buildscript {
     repositories {
-        maven { url "https://dl.google.com/dl/android/maven2/" }
+        google()
         mavenCentral()
         maven { url "https://jitpack.io" }
         maven { url 'https://dl.bintray.com/bertrandmartel/maven/' }
-        // Jcenter mirror (jcenter is shut down)
-        maven { url "https://maven.aliyun.com/repository/jcenter" }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.3'
+        classpath 'com.android.tools.build:gradle:7.4.2'
+        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.23'
         classpath 'fr.bmartel:gradle-javacard:1.5.2'
-        classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.8.1'
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.0'
-        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.4.1'
+        // Coveralls plugin removed - can be added later if needed for CI
     }
 }
 
-allprojects {
-    apply plugin: 'base'
-    apply plugin: 'jacoco'
-    apply plugin: 'com.github.kt3k.coveralls'
+plugins {
+    id 'org.jetbrains.kotlin.android' version '1.9.23' apply false
+}
 
+allprojects {
     repositories {
-        maven { url "https://dl.google.com/dl/android/maven2/" }
+        google()
         mavenCentral()
         maven { url "https://jitpack.io" }
         maven { url "https://github.com/omadahealth/omada-nexus/raw/master/release" }
         maven { url 'https://dl.bintray.com/bertrandmartel/maven/' }
-        // Jcenter mirror (jcenter is shut down)
-        maven { url "https://maven.aliyun.com/repository/jcenter" }
-    }
-
-    jacoco {
-        toolVersion = '0.7.9'
     }
 }
 
-def publishedProjects = [project.findProject(':applet')]
+// Java 11 configuration (AGP 7.4.2 works with Java 11)
 
-task jacocoMerge(type: JacocoMerge) {
-    publishedProjects.each { subproject ->
-        executionData subproject.tasks.withType(Test)
-    }
-    doFirst {
-        executionData = files(executionData.findAll { it.exists() })
-    }
-}
+// Jacoco configuration removed - applet module excluded from main build
 
-configure(subprojects.findAll { it.name == 'applet' }) {
-    apply plugin: 'java'
-}
-
-task jacocoRootReport(type: JacocoReport, group: 'Coverage reports') {
-    description = 'Generates an aggregate report from all subprojects'
-    dependsOn publishedProjects.test, jacocoMerge
-
-    additionalSourceDirs = files(publishedProjects.sourceSets.main.allSource.srcDirs)
-    sourceDirectories = files(publishedProjects.sourceSets.main.allSource.srcDirs)
-    classDirectories = files(publishedProjects.sourceSets.main.output)
-    executionData jacocoMerge.destinationFile
-
-    reports {
-        html.enabled = true // human readable
-        xml.enabled = true // required by coveralls
-    }
-}
-
-coveralls {
-    sourceDirs = publishedProjects.sourceSets.main.allSource.srcDirs.flatten()
-    jacocoReportPath = "${buildDir}/reports/jacoco/jacocoRootReport/jacocoRootReport.xml"
-}
-
-tasks.coveralls {
-    group = 'Coverage reports'
-    description = 'Uploads the aggregated coverage report to Coveralls'
-
-    dependsOn jacocoRootReport
+// Clean task
+tasks.register('clean', Delete) {
+    delete rootProject.buildDir
 }

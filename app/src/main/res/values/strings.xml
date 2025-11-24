@@ -27,4 +27,6 @@
     <string name="mode_app">store password on App</string>
     <string name="mode_description">Select the location where password should be stored (only encrypted password are stored, for App storage encryption/decryption is done on SIM card)</string>
     <string name="mode_title">Storage mode</string>
+    <string name="biometric_prompt_title">Authenticate</string>
+    <string name="biometric_prompt_subtitle">Use biometric or device credentials to access your passwords</string>
 </resources>

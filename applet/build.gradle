@@ -68,8 +68,8 @@ configurations.all {
 }
 
 dependencies {
-    testCompile 'com.licel:jcardsim:2.2.2'  // Using Maven Central version (3.x is broken on bintray)
-    testCompile 'junit:junit:4.12'
+    testImplementation 'com.licel:jcardsim:2.2.2'  // Using Maven Central version (3.x is broken on bintray)
+    testImplementation 'junit:junit:4.13.2'  // Updated JUnit version
 }
 
 test {
@@ -80,4 +80,5 @@ test {
         showStandardStreams = true
         exceptionFormat = 'full'
     }
+    useJUnit()  // Explicitly specify JUnit platform
 }
