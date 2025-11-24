@@ -23,8 +23,6 @@
  */
 package fr.bmartel.smartcard.passwordwallet;
 
-import org.globalplatform.GPSystem;
-
 import javacard.framework.APDU;
 import javacard.framework.Applet;
 import javacard.framework.ISO7816;
@@ -43,6 +41,12 @@ import javacardx.crypto.Cipher;
  * @author Bertrand Martel
  */
 public class PasswordWalletApplet extends Applet {
+
+    // Card state constants (replacing GlobalPlatform GPSystem)
+    public static final byte APPLICATION_SELECTABLE = 7;
+    public static final byte CARD_SECURED = 15;
+
+    private static byte cardState = APPLICATION_SELECTABLE;
 
     private OwnerPIN pin;
 
@@ -115,9 +119,9 @@ public class PasswordWalletApplet extends Applet {
 
         short len = apdu.setIncomingAndReceive();
 
-        switch (GPSystem.getCardContentState()) {
+        switch (cardState) {
 
-            case GPSystem.APPLICATION_SELECTABLE:
+            case APPLICATION_SELECTABLE:
                 switch (buffer[ISO7816.OFFSET_INS]) {
                     case INS_CHANGE_REFERENCE_DATA:
                         processChangeReferenceData(len);
@@ -129,7 +133,7 @@ public class PasswordWalletApplet extends Applet {
                         ISOException.throwIt(ISO7816.SW_INS_NOT_SUPPORTED);
                 }
                 break;
-            case GPSystem.CARD_SECURED:
+            case CARD_SECURED:
 
                 if (buffer[ISO7816.OFFSET_INS] != INS_LIST_PASSWORD)
                     current = null;
@@ -224,7 +228,7 @@ public class PasswordWalletApplet extends Applet {
 
         if ((short) (buffer[ISO7816.OFFSET_LC] & 0xFF) != 0)
             ISOException.throwIt(ISO7816.SW_DATA_INVALID);
-        buffer[0] = GPSystem.getCardContentState();
+        buffer[0] = cardState;
         apdu.setOutgoingAndSend((short) 0x00, (short) 1);
     }
 
@@ -531,11 +535,11 @@ public class PasswordWalletApplet extends Applet {
         byte p1 = buf[ISO7816.OFFSET_P1];
         switch (p1) {
             case 0:
-                if (GPSystem.getCardContentState() != GPSystem.APPLICATION_SELECTABLE)
+                if (cardState != APPLICATION_SELECTABLE)
                     ISOException.throwIt(ISO7816.SW_INCORRECT_P1P2);
                 break;
             case 1:
-                if (GPSystem.getCardContentState() != GPSystem.CARD_SECURED)
+                if (cardState != CARD_SECURED)
                     ISOException.throwIt(ISO7816.SW_INCORRECT_P1P2);
                 break;
             default:
@@ -563,7 +567,7 @@ public class PasswordWalletApplet extends Applet {
         pin.update(buf, index, newPinLen);
 
         if (p1 == 0) {
-            GPSystem.setCardContentState(GPSystem.CARD_SECURED);
+            cardState = CARD_SECURED;
         }
     }
 

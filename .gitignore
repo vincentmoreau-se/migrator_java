@@ -1,0 +1,86 @@
+# Gradle files
+.gradle/
+build/
+gradle-app.setting
+!gradle-wrapper.jar
+
+# Local configuration file (sdk path, etc)
+local.properties
+
+# Android Studio
+*.iml
+.idea/
+.DS_Store
+captures/
+.externalNativeBuild
+.cxx
+
+# Android build outputs
+*.apk
+*.ap_
+*.aab
+*.dex
+*.class
+
+# Java build artifacts
+*.jar
+*.war
+*.ear
+target/
+out/
+
+# JavaCard build artifacts
+*.cap
+*.exp
+*.jca
+*.ijc
+
+# Log Files
+*.log
+
+# Android NDK
+obj/
+
+# Android Lint
+lint/
+lint-results.html
+lint-results.xml
+
+# Proguard
+proguard/
+
+# OS Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+*~
+
+# IDE - IntelliJ IDEA
+*.iml
+*.ipr
+*.iws
+.idea/
+*.swp
+
+# IDE - Eclipse
+.classpath
+.project
+.settings/
+bin/
+
+# IDE - VSCode
+.vscode/
+
+# Keystore files (security)
+*.jks
+*.keystore
+
+# Setup script (contains local paths)
+setup-env.sh
+
+# Android SDK (if accidentally added)
+android-sdk/

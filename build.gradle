@@ -1,7 +1,11 @@
 buildscript {
     repositories {
-        jcenter()
+        maven { url "https://dl.google.com/dl/android/maven2/" }
         mavenCentral()
+        maven { url "https://jitpack.io" }
+        maven { url 'https://dl.bintray.com/bertrandmartel/maven/' }
+        // Jcenter mirror (jcenter is shut down)
+        maven { url "https://maven.aliyun.com/repository/jcenter" }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:2.3.3'
@@ -18,14 +22,13 @@ allprojects {
     apply plugin: 'com.github.kt3k.coveralls'
 
     repositories {
-        jcenter()
-        maven { url "https://maven.google.com" }
-        maven {
-            url "https://github.com/omadahealth/omada-nexus/raw/master/release"
-        }
-        maven {
-            url 'https://dl.bintray.com/bertrandmartel/maven/'
-        }
+        maven { url "https://dl.google.com/dl/android/maven2/" }
+        mavenCentral()
+        maven { url "https://jitpack.io" }
+        maven { url "https://github.com/omadahealth/omada-nexus/raw/master/release" }
+        maven { url 'https://dl.bintray.com/bertrandmartel/maven/' }
+        // Jcenter mirror (jcenter is shut down)
+        maven { url "https://maven.aliyun.com/repository/jcenter" }
     }
 
     jacoco {

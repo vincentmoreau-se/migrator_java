@@ -3,7 +3,7 @@ apply plugin: 'javacard'
 javacard {
 
     config {
-        jckit '../oracle_javacard_sdks/jc221_kit'
+        jckit '/home/vincent/workspace/oracle_javacard_sdks/jc221_kit'
 
         cap {
             packageName 'fr.bmartel.smartcard.passwordwallet'
@@ -16,7 +16,7 @@ javacard {
             }
 
             dependencies {
-                remote 'fr.bmartel:gplatform:2.1.1'
+                // Using local GPSystem stub instead of broken bintray dependency
             }
         }
     }
@@ -59,6 +59,17 @@ javacard {
         }
 
     }
+}
+
+configurations.all {
+    resolutionStrategy {
+        force 'com.licel:jcardsim:2.2.2'  // Force Maven Central version, override broken bintray 3.0.4
+    }
+}
+
+dependencies {
+    testCompile 'com.licel:jcardsim:2.2.2'  // Using Maven Central version (3.x is broken on bintray)
+    testCompile 'junit:junit:4.12'
 }
 
 test {
