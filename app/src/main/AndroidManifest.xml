@@ -2,7 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-permission android:name="org.simalliance.openmobileapi.SMARTCARD"></uses-permission>
 
     <application
         android:name=".application.PasswordApplication"
@@ -12,10 +11,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="android:label">
-
-        <uses-library
-            android:name="org.simalliance.openmobileapi"
-            android:required="true" />
 
         <activity
             android:name="fr.bmartel.smartcard.passwordwallet.MainActivity"

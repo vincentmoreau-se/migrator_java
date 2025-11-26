@@ -59,12 +59,14 @@ object MenuUtils {
             R.id.close_session -> {
                 // Close and reopen UICC channel to reset session
                 // Biometric authentication is handled at app startup in MainActivity
-                application.getUicc().closeChannel()
-                try {
-                    application.getUicc().openChannel()
-                    Log.i(TAG, "Session closed and reopened successfully")
-                } catch (e: IOException) {
-                    Log.e(TAG, "Failed to reopen UICC channel", e)
+                application.getUicc()?.let { uicc ->
+                    uicc.closeChannel()
+                    try {
+                        uicc.openChannel()
+                        Log.i(TAG, "Session closed and reopened successfully")
+                    } catch (e: IOException) {
+                        Log.e(TAG, "Failed to reopen UICC channel", e)
+                    }
                 }
             }
             R.id.change_pincode -> {

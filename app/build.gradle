@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId "fr.bmartel.smartcard.passwordwallet"
-        minSdk 24  // Android 7.0+
+        minSdk 28  // Android 9.0+ (required for android.se.omapi)
         targetSdk 34
         versionCode 2
         versionName "2.0"
@@ -66,8 +66,7 @@ android {
 }
 
 dependencies {
-    // OpenMobileAPI for SIM card communication
-    compileOnly files('libs/org.simalliance.openmobileapi.jar')
+    // OpenMobileAPI is now part of Android SDK (android.se.omapi) since API 28
 
     // AndroidX Core
     implementation 'androidx.core:core-ktx:1.12.0'

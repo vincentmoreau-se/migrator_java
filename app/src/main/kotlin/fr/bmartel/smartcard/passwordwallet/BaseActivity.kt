@@ -191,7 +191,7 @@ abstract class BaseActivity : AppCompatActivity(), IBaseActivity {
                 cursor.close()
             }
             PasswordApplication.MODE_SIM_STORAGE -> {
-                val passwordList = mApplication.getUicc().getPasswordList()
+                val passwordList = mApplication.getUicc()?.getPasswordList()
                 if (passwordList != null) {
                     mPasswordList = passwordList.toMutableList()
                 } else {
@@ -299,7 +299,7 @@ abstract class BaseActivity : AppCompatActivity(), IBaseActivity {
     override fun saveNewPassword(title: String, username: String, password: String): ByteArray? {
         when (mApplication.mode) {
             PasswordApplication.MODE_APP_STORAGE -> {
-                val result = mApplication.getUicc().encrypt(password.toByteArray())
+                val result = mApplication.getUicc()?.encrypt(password.toByteArray()) ?: return null
                 if (result.isSuccessful()) {
                     val db = mDbHelper.writableDatabase
                     val values = ContentValues().apply {
@@ -314,7 +314,7 @@ abstract class BaseActivity : AppCompatActivity(), IBaseActivity {
                 }
             }
             PasswordApplication.MODE_SIM_STORAGE -> {
-                val result = mApplication.getUicc().addPassword(title, username, password)
+                val result = mApplication.getUicc()?.addPassword(title, username, password) ?: return null
                 if (result.isSuccessful()) {
                     val passwordObj = Password(title, null, null)
                     mPasswordList.add(passwordObj)
@@ -339,7 +339,7 @@ abstract class BaseActivity : AppCompatActivity(), IBaseActivity {
     override fun saveExistingPassword(formerTitle: String, newTitle: String, username: String, password: String): ByteArray? {
         when (mApplication.mode) {
             PasswordApplication.MODE_APP_STORAGE -> {
-                val result = mApplication.getUicc().encrypt(password.toByteArray())
+                val result = mApplication.getUicc()?.encrypt(password.toByteArray()) ?: return null
                 if (result.isSuccessful()) {
                     val db = mDbHelper.writableDatabase
                     val values = ContentValues().apply {
@@ -358,7 +358,7 @@ abstract class BaseActivity : AppCompatActivity(), IBaseActivity {
                 }
             }
             PasswordApplication.MODE_SIM_STORAGE -> {
-                val result = mApplication.getUicc().editPassword(formerTitle, newTitle, username, password)
+                val result = mApplication.getUicc()?.editPassword(formerTitle, newTitle, username, password) ?: return null
                 if (result.isSuccessful()) {
                     for (i in mPasswordList.indices) {
                         if (mPasswordList[i].title == formerTitle) {
@@ -382,7 +382,7 @@ abstract class BaseActivity : AppCompatActivity(), IBaseActivity {
      * @return password decrypted
      */
     override fun decrypt(password: ByteArray): String? {
-        val data = mApplication.getUicc().decrypt(password)
+        val data = mApplication.getUicc()?.decrypt(password) ?: return null
         if (data.isSuccessful()) {
             return String(data.getData())
         }
@@ -399,7 +399,12 @@ abstract class BaseActivity : AppCompatActivity(), IBaseActivity {
     override fun setMode(mode: Byte, progress: ProgressBar, listener: ICompletionListener) {
         mApplication.getApplicationScope().launch(Dispatchers.IO) {
             Log.v(TAG, "set mode $mode")
-            val res = mApplication.getUicc().setMode(mode)
+            val uicc = mApplication.getUicc()
+            if (uicc == null) {
+                listener.onComplete()
+                return@launch
+            }
+            val res = uicc.setMode(mode)
             if (!res.isSuccessful()) {
                 Log.e(TAG, "set mode failed")
             } else {
@@ -414,14 +419,14 @@ abstract class BaseActivity : AppCompatActivity(), IBaseActivity {
                         }
                         mPasswordList.clear()
                         for (i in tempList.indices) {
-                            val result = mApplication.getUicc().getPassword(tempList[i].title ?: "")
+                            val result = uicc.getPassword(tempList[i].title ?: "")
                             if (result.isSuccessful()) {
                                 val realPassword = UiccUtils.parsePassword(tempList[i].title ?: "", result.getData())
                                 realPassword?.let {
                                     // add password in database
                                     saveNewPassword(it.title ?: "", it.username ?: "", String(it.password ?: byteArrayOf()))
                                     // delete on UICC
-                                    mApplication.getUicc().deletePassword(it.title ?: "")
+                                    uicc.deletePassword(it.title ?: "")
                                     withContext(Dispatchers.Main) {
                                         progress.progress = (i * 100) / tempList.size
                                     }
@@ -476,7 +481,7 @@ abstract class BaseActivity : AppCompatActivity(), IBaseActivity {
             }
             PasswordApplication.MODE_SIM_STORAGE -> {
                 val password = mPasswordList[index]
-                val result = mApplication.getUicc().getPassword(password.title ?: "")
+                val result = mApplication.getUicc()?.getPassword(password.title ?: "") ?: return null
                 if (result.isSuccessful()) {
                     return UiccUtils.parsePassword(password.title ?: "", result.getData())
                 } else {
@@ -516,8 +521,8 @@ abstract class BaseActivity : AppCompatActivity(), IBaseActivity {
                         mPasswordList.remove(password)
                     }
                     PasswordApplication.MODE_SIM_STORAGE -> {
-                        val result = mApplication.getUicc().deletePassword(title)
-                        if (!result.isSuccessful()) {
+                        val result = mApplication.getUicc()?.deletePassword(title)
+                        if (result == null || !result.isSuccessful()) {
                             Toast.makeText(this, "failed to delete password on UICC", Toast.LENGTH_SHORT).show()
                         } else {
                             mPasswordList.remove(password)

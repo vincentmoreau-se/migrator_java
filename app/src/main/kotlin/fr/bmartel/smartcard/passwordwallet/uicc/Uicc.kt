@@ -18,11 +18,11 @@
  */
 package fr.bmartel.smartcard.passwordwallet.uicc
 
+import android.se.omapi.Channel
+import android.se.omapi.SEService
 import android.util.Log
 import fr.bmartel.smartcard.passwordwallet.model.Password
 import fr.bmartel.smartcard.passwordwallet.utils.HexUtils
-import org.simalliance.openmobileapi.Channel
-import org.simalliance.openmobileapi.SEService
 import java.io.IOException
 
 /**

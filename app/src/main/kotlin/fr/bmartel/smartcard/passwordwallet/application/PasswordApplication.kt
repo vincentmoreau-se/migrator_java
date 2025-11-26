@@ -23,6 +23,7 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.widget.Toast
+import android.se.omapi.SEService
 import fr.bmartel.smartcard.passwordwallet.R
 import fr.bmartel.smartcard.passwordwallet.inter.IServiceConnection
 import fr.bmartel.smartcard.passwordwallet.uicc.Uicc
@@ -32,25 +33,25 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.simalliance.openmobileapi.SEService
 import java.io.IOException
+import java.util.concurrent.Executor
 
 /**
  * Password Application which bounds to SEService.
  *
  * @author Bertrand Martel
  */
-class PasswordApplication : Application(), SEService.CallBack {
+class PasswordApplication : Application() {
 
     /**
      * SEService used to interact with SmartCard API.
      */
-    private lateinit var seService: SEService
+    private var seService: SEService? = null
 
     /**
      * UICC object used to manage UICC I/O.
      */
-    private lateinit var mUicc: Uicc
+    private var mUicc: Uicc? = null
 
     /**
      * Application coroutine scope.
@@ -71,6 +72,11 @@ class PasswordApplication : Application(), SEService.CallBack {
 
     private lateinit var mHandler: Handler
 
+    /**
+     * Executor for SEService callback (runs on main thread).
+     */
+    private val executor = Executor { command -> mHandler.post(command) }
+
     override fun onCreate() {
         super.onCreate()
 
@@ -81,9 +87,11 @@ class PasswordApplication : Application(), SEService.CallBack {
 
     override fun onTerminate() {
         applicationScope.cancel()
-        mUicc.closeChannel()
-        if (seService.isConnected) {
-            seService.shutdown()
+        mUicc?.closeChannel()
+        seService?.let { service ->
+            if (service.isConnected) {
+                service.shutdown()
+            }
         }
         super.onTerminate()
     }
@@ -98,10 +106,11 @@ class PasswordApplication : Application(), SEService.CallBack {
     private fun initSeService() {
         try {
             Log.v(TAG, "creating SEService object")
-            seService = SEService(this, this)
-            mUicc = Uicc(seService)
+            seService = SEService(this, executor) {
+                seService?.let { onServiceConnected(it) }
+            }
         } catch (e: SecurityException) {
-            Log.e(TAG, "Binding not allowed, uses-permission org.simalliance.openmobileapi.SMARTCARD?")
+            Log.e(TAG, "Binding not allowed, missing permissions?")
         } catch (e: Exception) {
             Log.e(TAG, "Exception: ${e.message}")
         }
@@ -112,12 +121,13 @@ class PasswordApplication : Application(), SEService.CallBack {
      *
      * @param service
      */
-    override fun serviceConnected(service: SEService) {
-        Log.v(TAG, "serviceConnected()")
+    private fun onServiceConnected(service: SEService) {
+        Log.v(TAG, "onServiceConnected()")
+        mUicc = Uicc(service)
         applicationScope.launch(Dispatchers.IO) {
             try {
                 // open logical channel
-                mUicc.openChannel()
+                mUicc?.openChannel()
             } catch (e: SecurityException) {
                 Log.e(TAG, "SecurityException", e)
                 withContext(Dispatchers.Main) {
@@ -164,7 +174,7 @@ class PasswordApplication : Application(), SEService.CallBack {
      * Get the current mode from UICC.
      */
     fun refreshMode() {
-        val modeRes = mUicc.getMode()
+        val modeRes = mUicc?.getMode() ?: return
         if (!modeRes.isSuccessful()) {
             Log.e(TAG, "get mode failed")
         } else {
@@ -172,7 +182,7 @@ class PasswordApplication : Application(), SEService.CallBack {
         }
     }
 
-    fun getUicc(): Uicc {
+    fun getUicc(): Uicc? {
         return mUicc
     }
 
@@ -186,7 +196,7 @@ class PasswordApplication : Application(), SEService.CallBack {
      * @return
      */
     fun isCardSecured(): Boolean {
-        val cardStateRes = mUicc.getCardState()
+        val cardStateRes = mUicc?.getCardState() ?: return true
         if (cardStateRes.getData().isNotEmpty()) {
             return cardStateRes.getData()[0] == CARD_SECURED
         }
@@ -194,7 +204,7 @@ class PasswordApplication : Application(), SEService.CallBack {
     }
 
     fun isPinCodeChecked(): Boolean {
-        return mUicc.getPinCodeState().isSuccessful()
+        return mUicc?.getPinCodeState()?.isSuccessful() ?: false
     }
 
     fun isConnected(): Boolean {
