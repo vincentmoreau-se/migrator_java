@@ -78,7 +78,7 @@ abstract class BaseActivity : AppCompatActivity(), IBaseActivity {
     /**
      * list of password retrieved from database or from UICC.
      */
-    private lateinit var mPasswordList: MutableList<Password>
+    private var mPasswordList: MutableList<Password> = mutableListOf()
 
     /**
      * the current fragment.
